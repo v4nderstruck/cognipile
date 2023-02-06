@@ -628,6 +628,11 @@
   dependencies:
     "@prisma/generator-helper" "^4.7.1"
 
+"@pothos/plugin-relay@^3.34.0":
+  version "3.34.0"
+  resolved "https://registry.npmjs.org/@pothos/plugin-relay/-/plugin-relay-3.34.0.tgz"
+  integrity sha512-yXWCmFeRlVYJrZZxYEMTZLe6l5CFhudJ9ZuzR+GaSNBZMC2XF6r2Q25vMBivDGqKMn7lyXIb85mXWXhx9juczA==
+
 "@prisma/client@*", "@prisma/client@^4.9.0":
   version "4.9.0"
   resolved "https://registry.npmjs.org/@prisma/client/-/client-4.9.0.tgz"
