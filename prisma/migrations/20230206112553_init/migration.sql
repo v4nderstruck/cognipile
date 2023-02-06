@@ -1,0 +1,55 @@
+-- CreateTable
+CREATE TABLE "Sessions" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "startTime" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "endTime" DATETIME NOT NULL,
+    "taskId" INTEGER,
+    CONSTRAINT "Sessions_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Entry" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "value" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "stackId" INTEGER,
+    CONSTRAINT "Entry_stackId_fkey" FOREIGN KEY ("stackId") REFERENCES "Stack" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Stack" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "threadId" INTEGER NOT NULL,
+    CONSTRAINT "Stack_threadId_fkey" FOREIGN KEY ("threadId") REFERENCES "Thread" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Thread" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "stackId" INTEGER NOT NULL,
+    "taskId" INTEGER,
+    CONSTRAINT "Thread_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Task" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "projectId" INTEGER,
+    CONSTRAINT "Task_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Project" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Stack_threadId_key" ON "Stack"("threadId");

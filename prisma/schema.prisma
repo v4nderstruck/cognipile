@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// description fields in markdown
+
+model Sessions {
+  id        Int      @id @default(autoincrement())
+  startTime DateTime @default(now())
+  endTime   DateTime
+  Task      Task?    @relation(fields: [taskId], references: [id])
+  taskId    Int?
+}
+
+model Entry {
+  id        Int      @id @default(autoincrement())
+  value     String
+  createdAt DateTime @default(now())
+  Stack     Stack?   @relation(fields: [stackId], references: [id])
+  stackId   Int?
+}
+
+model Stack {
+  id       Int     @id @default(autoincrement())
+  name     String
+  entries  Entry[]
+  thread   Thread  @relation(fields: [threadId], references: [id])
+  threadId Int     @unique
+}
+
+model Thread {
+  id      Int    @id @default(autoincrement())
+  stack   Stack?
+  stackId Int
+  Task    Task?  @relation(fields: [taskId], references: [id])
+  taskId  Int?
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  status      String
+  createdAt   DateTime   @default(now())
+  threads     Thread[]
+  sessions    Sessions[]
+  Project     Project?   @relation(fields: [projectId], references: [id])
+  projectId   Int?
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  tasks       Task[]
+  createdAt   DateTime @default(now())
+}
