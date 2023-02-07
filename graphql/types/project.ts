@@ -7,8 +7,9 @@ builder.prismaObject("Project", {
     description: f.exposeString("description"),
     createdAt: f.field({
       type: "String",
-      resolve: (parent) => (parent.createdAt.toDateString())
-    })
+      resolve: (parent) => (parent.createdAt.toLocaleString())
+    }),
+    tasks: f.relation("tasks"),
   })
 })
 
@@ -20,15 +21,15 @@ builder.queryField("getProjects", (q) =>
   })
 )
 
-builder.mutationField("createProject", (m) => 
+builder.mutationField("createProject", (m) =>
   m.prismaField({
     type: "Project",
     args: {
-      name: m.arg.string({required: true}),
-      description: m.arg.string({required: true}),
+      name: m.arg.string({ required: true }),
+      description: m.arg.string({ required: true }),
     },
-    resolve: async (query, _parent, args, _ctx) =>  {
-      const {name, description} = args;
+    resolve: async (query, _parent, args, _ctx) => {
+      const { name, description } = args;
       return await prisma.project.create({
         ...query,
         data: {
@@ -39,3 +40,28 @@ builder.mutationField("createProject", (m) =>
     }
   })
 )
+
+builder.mutationField("updateProject", (m) =>
+  m.prismaField({
+    type: "Project",
+    args: {
+      id: m.arg.id({ required: true }),
+      name: m.arg.string(),
+      description: m.arg.string(),
+    },
+    resolve: async (query, _parent, args, _ctx) => {
+      const { id, name, description } = args;
+      const data = { ...(name && { name: name }), ...(description && { description: description }) };
+      return await prisma.project.update({
+        ...query,
+        where: {
+          id: Number(id)
+        },
+        data: {
+          name: name ? name : undefined,
+          description: description ? description : undefined,
+        }
+      })
+    }
+  })
+);
